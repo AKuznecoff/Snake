@@ -25,23 +25,10 @@ public class GamePanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //this.setBackground(Color.BLACK);
-        //g.setColor(Color.WHITE);
-        //g.fillRect(0,0, width, height);
-
-
         HashMap<Point, GameObject> gameObjects = board.getGameObjects();
+        DrawVisitor visitor = new DrawVisitor(CELL_SIZE, g);
         for (GameObject object: gameObjects.values()) {
-            Point position = object.getPosition();
-            if (object.checkEdible()) {
-                g.setColor(Color.RED);
-                g.fillOval(position.getX() * CELL_SIZE, position.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-            }
-
-            else {
-                g.setColor(Color.BLUE);
-                g.fillRect(position.getX() * CELL_SIZE, position.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-            }
+            object.accept(visitor);
         }
 
         for (SnakeSegment segment: board.getSnake()) {

@@ -12,4 +12,9 @@ public class Food extends GameObject{
     public boolean checkEdible() {
         return true;
     }
+
+    @Override
+    public void accept(IVisitor visitor) {
+        visitor.drawObject(this);
+    }
 }

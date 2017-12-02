@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Board b = new Board(10, 10, 1);
+        Board b = new Board(10, 10, 2);
         JFrame frame = new JFrame("GAME");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new GamePanel(b));
@@ -27,6 +27,7 @@ public class Main {
                 }
             }
         });
+
         frame.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -66,16 +67,18 @@ public class Main {
         });
         JLabel lbl = new JLabel(String.format("Scores: %s", b.getScores()));
         frame.add(lbl);
-    }
 
-    public static void print(Board b) {
-        //StringBuilder builder = new StringBuilder();
-        for (Iterator<SnakeSegment> i = b.getSnake().iterator(); i.hasNext(); ) {
-            SnakeSegment snakeSegment = i.next();
-            System.out.print(String.format("(%s, %d) ", snakeSegment.getPosition().getX(), snakeSegment.getPosition().getY()));
-
-        }
-        System.out.println();
-        //System.out.println(String.format("(%s, %d)", b.getFood().getX(), b.getFood().getY()));
+        /*Game game = new Game();
+        frame.add(game);
+        frame.setSize(300, 300);
+        frame.setVisible(true);*/
+        /*JFrame frame = new JFrame("Snake");
+        GamePanel game = new GamePanel(new Board(10, 10), null);
+        Game p = new Game();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+        frame.add(game);
+        frame.setVisible(true);
+        frame.setSize(game.getSize());*/
     }
 }
