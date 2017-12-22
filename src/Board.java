@@ -1,8 +1,9 @@
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-class Board {
+class Board implements Serializable{
     private int height;
     private int width;
     private int foodLimit;
@@ -27,7 +28,7 @@ class Board {
         snakeLength = 0;
         direction = Directions.RIGHT;
         scores = 0;
-        initWalls();
+        //initWalls();
         initSnake();
         placeFood();
     }
@@ -81,7 +82,20 @@ class Board {
                     Point position = new Point(x, y);
                     addObject(position, new Wall(position));
                 }
+
+                if (((x >= 3 && x <= width / 2 - 2) || (x >= width / 2 + 2 && x <= width - 4)) && (y == 3 || y == height - 4)){
+                    Point position = new Point(x, y);
+                    addObject(position, new Wall(position));
+                }
+
+                if (((y >= 4 && y <= height / 2 - 2) || (y >= height / 2 + 3 && y <= height - 4)) && (x == 3 || x == width - 4)){
+                    Point position = new Point(x, y);
+                    addObject(position, new Wall(position));
+                }
+
+
             }
+
     }
 
     private void initSnake() {

@@ -11,18 +11,25 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {
+    static Board board;
+    static int level;
     public static void main(String[] args) {
-        Board b = new Board(10, 10, 2);
+        //board = new Board(20, 20, 1);
+        level = 1;
+        initBoard();
         JFrame frame = new JFrame("GAME");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new GamePanel(b));
-        frame.pack();
-        frame.setVisible(true);
+        tuneFrame(frame);
         Timer timer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!b.checkFinished()) {
-                    b.nextStep();
+                if (!board.checkFinished()) {
+                    board.nextStep();
+                    if (board.getScores() > 20) {
+                        if (level < 2)
+                            level++;
+                        initBoard();
+                        tuneFrame(frame);
+                    }
                     frame.repaint();
                 }
             }
@@ -33,20 +40,36 @@ public class Main {
             public void keyTyped(KeyEvent e) {
                 switch(e.getKeyChar()) {
                     case 'a':
-                        b.setDirection(Directions.LEFT);
+                        board.setDirection(Directions.LEFT);
                         break;
                     case 'w':
-                        b.setDirection(Directions.UP);
+                        board.setDirection(Directions.UP);
                         break;
                     case 'd':
-                        b.setDirection(Directions.RIGHT);
+                        board.setDirection(Directions.RIGHT);
                         break;
                     case 's':
-                        b.setDirection(Directions.DOWN);
+                        board.setDirection(Directions.DOWN);
+                        break;
+                    case 'l':
+                        if(!board.checkPause())
+                            timer.stop();
+                        board = load(board, "save.ser");
+                        tuneFrame(frame);
+                        //frame.repaint();
+                        break;
+                    case 'k':
+                        if (!board.checkPause()) {
+                            board.pause();
+                            timer.stop();
+                        }
+                        save(board);
+                        board.pause();
+                        timer.start();
                         break;
                     case ' ':
-                        b.pause();
-                        if (b.checkPause()) {
+                        board.pause();
+                        if (board.checkPause()) {
                             timer.stop();
                         } else {
                             timer.start();
@@ -65,8 +88,7 @@ public class Main {
 
             }
         });
-        JLabel lbl = new JLabel(String.format("Scores: %s", b.getScores()));
-        frame.add(lbl);
+
 
         /*Game game = new Game();
         frame.add(game);
@@ -80,5 +102,37 @@ public class Main {
         frame.add(game);
         frame.setVisible(true);
         frame.setSize(game.getSize());*/
+    }
+
+    static void initBoard() {
+        board = load(null, "levels/" + level + ".ser");
+    }
+
+    static void tuneFrame(JFrame frame) {
+        frame.getContentPane().removeAll();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new GamePanel(board));
+        frame.pack();
+        JLabel lbl = new JLabel(String.format("Scores: %s", board.getScores()));
+        frame.add(lbl);
+        frame.setVisible(true);
+    }
+
+    static void save(Board board){
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("save.ser"))){
+            out.writeObject(board);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static Board load(Board oldBoard, String name){
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(name))){
+            return (Board) in.readObject();
+        } catch (FileNotFoundException e) {
+            return oldBoard;
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

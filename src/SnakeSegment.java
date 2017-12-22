@@ -1,4 +1,6 @@
-public class SnakeSegment{
+import java.io.Serializable;
+
+public class SnakeSegment implements Serializable{
     private Point position;
 
     public SnakeSegment(Point position) {

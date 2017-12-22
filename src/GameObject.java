@@ -1,4 +1,6 @@
-public abstract class GameObject implements IGameObject {
+import java.io.Serializable;
+
+public abstract class GameObject implements IGameObject, Serializable {
     private Point position;
 
     public Point getPosition() {
